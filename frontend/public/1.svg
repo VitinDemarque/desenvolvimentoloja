@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+  <defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#facc15"/>
+      <stop offset="1" stop-color="#0ea5e9"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="10" width="140" height="140" rx="20" fill="#0b0f14" stroke="#1f242d"/>
+  <text x="80" y="88" font-size="64" font-weight="900" text-anchor="middle" fill="url(#g1)" font-family="Inter, system-ui">V7</text>
+  <rect x="30" y="105" width="100" height="24" rx="12" fill="#10151b" stroke="#1f242d"/>
+  <text x="80" y="122" font-size="14" font-weight="800" text-anchor="middle" fill="#e6e9ef" font-family="Inter, system-ui">STORE</text>
+</svg>
