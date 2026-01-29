@@ -8,9 +8,23 @@ export async function ensureSchema() {
       price NUMERIC(10,2) NOT NULL
     );
   `;
+  
+  const createUsersTable = `
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL UNIQUE,
+      password TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'customer',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
+
   try {
     await pool.query(createProductsTable);
-  } catch {
-    // swallow errors to allow server to run without DB
+    await pool.query(createUsersTable);
+    console.log('Database schema ensured');
+  } catch (error) {
+    console.error('Error ensuring database schema:', error);
   }
 }
