@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import AdminProductForm from './AdminProductForm';
+import { useNavigate } from 'react-router-dom';
 
 type AdminSidebarProps = {
   isOpen: boolean;
@@ -8,6 +8,7 @@ type AdminSidebarProps = {
 
 export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
   const sidebarRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   // Close when clicking outside
   useEffect(() => {
@@ -24,6 +25,11 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
     };
   }, [isOpen, onClose]);
 
+  const handleNavigate = (path: string) => {
+    navigate(path);
+    onClose();
+  };
+
   return (
     <>
       <div className={`admin-sidebar-overlay ${isOpen ? 'open' : ''}`} />
@@ -37,7 +43,17 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
           </button>
         </div>
         <div className="admin-sidebar-content">
-          <AdminProductForm />
+          <nav className="admin-nav">
+            <button className="admin-nav-item" onClick={() => handleNavigate('/admin/add-product')}>
+              <span className="icon">＋</span>
+              Adicionar Produto
+            </button>
+            {/* Future admin links can go here */}
+            <button className="admin-nav-item" onClick={() => handleNavigate('/')}>
+              <span className="icon">🏠</span>
+              Voltar para Loja
+            </button>
+          </nav>
         </div>
       </div>
     </>

@@ -8,6 +8,7 @@ import RegisterPage from './pages/RegisterPage';
 import CartPage from './pages/CartPage';
 import ProfilePage from './pages/ProfilePage';
 import SearchPage from './pages/SearchPage';
+import AdminAddProductPage from './pages/AdminAddProductPage';
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
               <Route path="/cart" element={<CartPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/search" element={<SearchPage />} />
+              <Route path="/admin/add-product" element={<AdminAddProductPage />} />
             </Routes>
             <footer className="footer">
               <div className="container footer-content">
