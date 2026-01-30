@@ -6,7 +6,7 @@ import { createUser, findUserByEmail } from '../models/userModel';
 const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
 
 export const register = async (req: Request, res: Response): Promise<void> => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password, role, phone } = req.body;
 
   try {
     const existingUser = await findUserByEmail(email);
@@ -22,7 +22,8 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       name,
       email,
       password: hashedPassword,
-      role: role || 'customer' // Allow specifying role for now (e.g. for admin creation)
+      role: role || 'customer',
+      phone
     });
 
     res.status(201).json({ message: 'User registered successfully', user: newUser });

@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { LoadingProvider } from './context/LoadingContext';
+import GlobalLoader from './components/GlobalLoader';
 import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -12,12 +14,14 @@ import AdminAddProductPage from './pages/AdminAddProductPage';
 
 export default function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <Router>
-          <div className="layout">
-            <Header />
-            <Routes>
+    <LoadingProvider>
+      <AuthProvider>
+        <CartProvider>
+          <Router>
+            <div className="layout">
+              <GlobalLoader />
+              <Header />
+              <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
@@ -34,7 +38,8 @@ export default function App() {
             </footer>
           </div>
         </Router>
-      </CartProvider>
-    </AuthProvider>
+        </CartProvider>
+      </AuthProvider>
+    </LoadingProvider>
   );
 }

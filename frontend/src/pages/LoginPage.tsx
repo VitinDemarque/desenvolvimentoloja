@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { useLoading } from '../context/LoadingContext';
+import { TransitionLink } from '../components/TransitionLink';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -8,9 +10,13 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { showLoading, hideLoading } = useLoading();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    showLoading();
+    
     try {
       const res = await fetch('http://localhost:4000/api/auth/login', {
         method: 'POST',
@@ -22,16 +28,23 @@ export default function LoginPage() {
       if (!res.ok) throw new Error(data.message);
 
       login(data.token, data.user);
-      navigate('/');
+      
+      // Delay navigation slightly to show success or transition
+      setTimeout(() => {
+        navigate('/');
+        setTimeout(() => hideLoading(), 300);
+      }, 500);
+      
     } catch (err: any) {
       setError(err.message);
+      hideLoading();
     }
   };
 
   return (
-    <div className="container" style={{ marginTop: '120px', maxWidth: '400px' }}>
+    <div className="container" style={{ marginTop: '0', maxWidth: '1600px', marginBottom: '100px' }}>
       <h2 className="section-title">Login</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <div className="error-msg">{error}</div>}
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         <input
           type="email"
@@ -39,7 +52,7 @@ export default function LoginPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          style={{ padding: '10px', fontSize: '16px' }}
+          className="auth-input"
         />
         <input
           type="password"
@@ -47,10 +60,11 @@ export default function LoginPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          style={{ padding: '10px', fontSize: '16px' }}
+          className="auth-input"
         />
-        <button type="submit" className="hero-cta" style={{ width: '100%' }}>Entrar</button>
+        <button type="submit" className="hero-cta" style={{ width: '100%', marginTop: '10px' }}>Entrar</button>
       </form>
+      <TransitionLink to="/register" className="auth-link">Cadastrar-se</TransitionLink>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 type AdminSidebarProps = {
   isOpen: boolean;
@@ -9,8 +10,9 @@ type AdminSidebarProps = {
 export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user, logout } = useAuth();
 
-  // Close when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
@@ -30,32 +32,65 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
     onClose();
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+    onClose();
+  };
+
+  const menuItems = [
+    { label: 'Dashboard', path: '/', icon: '📊' },
+    { label: 'Adicionar Produto', path: '/admin/add-product', icon: '＋' },
+  ];
+
   return (
     <>
-      <div className={`admin-sidebar-overlay ${isOpen ? 'open' : ''}`} />
-      <div ref={sidebarRef} className={`admin-sidebar ${isOpen ? 'open' : ''}`}>
-        <div className="admin-sidebar-header">
-          <h2 className="admin-sidebar-title">Painel Admin</h2>
-          <button className="close-sidebar-btn" onClick={onClose}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M6 18L18 6M6 6l12 12" />
-            </svg>
+      <div 
+        className={`admin-overlay ${isOpen ? 'open' : ''}`} 
+        onClick={onClose}
+      />
+      <aside 
+        ref={sidebarRef} 
+        className={`admin-drawer ${isOpen ? 'open' : ''}`}
+      >
+        <div className="drawer-header">
+          <div className="drawer-title-row">
+            <h2 className="drawer-title">V7 Admin</h2>
+            <button className="drawer-close" onClick={onClose}>
+              ✕
+            </button>
+          </div>
+          {user && (
+            <div className="drawer-user">
+              <div className="user-avatar">{user.name.charAt(0).toUpperCase()}</div>
+              <div className="user-info">
+                <span className="user-name">{user.name}</span>
+                <span className="user-role">Administrador</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <nav className="drawer-nav">
+          {menuItems.map((item) => (
+            <button 
+              key={item.path}
+              className={`drawer-item ${location.pathname === item.path ? 'active' : ''}`}
+              onClick={() => handleNavigate(item.path)}
+            >
+              <span className="item-icon">{item.icon}</span>
+              {item.label}
+            </button>
+          ))}
+        </nav>
+
+        <div className="drawer-footer">
+          <button className="drawer-item logout" onClick={handleLogout}>
+            <span className="item-icon">🚪</span>
+            Sair
           </button>
         </div>
-        <div className="admin-sidebar-content">
-          <nav className="admin-nav">
-            <button className="admin-nav-item" onClick={() => handleNavigate('/admin/add-product')}>
-              <span className="icon">＋</span>
-              Adicionar Produto
-            </button>
-            {/* Future admin links can go here */}
-            <button className="admin-nav-item" onClick={() => handleNavigate('/')}>
-              <span className="icon">🏠</span>
-              Voltar para Loja
-            </button>
-          </nav>
-        </div>
-      </div>
+      </aside>
     </>
   );
 }

@@ -6,13 +6,14 @@ export interface User {
   email: string;
   password?: string;
   role?: string;
+  phone?: string;
   created_at?: Date;
 }
 
 export const createUser = async (user: User): Promise<User> => {
   const result = await pool.query(
-    'INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING id, name, email, role, created_at',
-    [user.name, user.email, user.password, user.role || 'customer']
+    'INSERT INTO users (name, email, password, role, phone) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, role, phone, created_at',
+    [user.name, user.email, user.password, user.role || 'customer', user.phone]
   );
   return result.rows[0];
 };
